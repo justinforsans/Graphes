@@ -30,12 +30,26 @@ public class Path {
      * @throws IllegalArgumentException If the list of nodes is not valid, i.e. two
      *         consecutive nodes in the list are not connected in the graph.
      * 
-     * @deprecated Need to be implemented.
+     * 
      */
     public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
         List<Arc> arcs = new ArrayList<Arc>();
-        // TODO:
+        Node nodePrecedent = nodes.get(0);     
+        for (Node node : nodes){
+        	if (node==nodes.get(0)) {continue;}
+        	double timeMin = Double.MAX_VALUE;
+        	Arc arcCourant = null;
+        	for (Arc arc : nodePrecedent.getSuccessors()) {
+        		if (node== arc.getDestination()) {
+        			if (arc.getMinimumTravelTime() < timeMin) {
+        				arcCourant = arc;
+        			}
+        		}else throw new IllegalArgumentException();
+        	}
+        	nodePrecedent = node;
+        	arcs.add(arcCourant);
+        }
         return new Path(graph, arcs);
     }
 
@@ -50,13 +64,27 @@ public class Path {
      * 
      * @throws IllegalArgumentException If the list of nodes is not valid, i.e. two
      *         consecutive nodes in the list are not connected in the graph.
+     * createShortestPathFromNodes
      * 
-     * @deprecated Need to be implemented.
      */
     public static Path createShortestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
         List<Arc> arcs = new ArrayList<Arc>();
-        // TODO:
+        Node nodePrecedent = nodes.get(0);     
+        for (Node node : nodes){
+        	if (node==nodes.get(0)) {continue;}
+        	double distMin = Double.MAX_VALUE;
+        	Arc arcCourant = null;
+        	for (Arc arc : nodePrecedent.getSuccessors()) {
+        		if (node== arc.getDestination()) {
+        			if (arc.getLength() < distMin) {
+        				arcCourant = arc;
+        			}
+        		}else throw new IllegalArgumentException();
+        	}
+        	nodePrecedent = node;
+        	arcs.add(arcCourant);
+        }
         return new Path(graph, arcs);
     }
 
@@ -229,7 +257,7 @@ public class Path {
      * 
      */
     public double getTravelTime(double speed) {
-        return (this.getLength()/speed);
+        return (this.getLength()*3600/(speed*1000));
     }
 
     /**
