@@ -23,7 +23,7 @@ public class Path {
      * choosing the fastest route if multiple are available.
      * 
      * @param graph Graph containing the nodes in the list.
-     * @param nodes List of nodes to build the path.
+     * @param nodes List of nodes to build the path
      * 
      * @return A path that goes through the given list of nodes.
      * 
@@ -225,12 +225,19 @@ public class Path {
      * </ul>
      * 
      * @return true if the path is valid, false otherwise.
-     * 
-     * @deprecated Need to be implemented.
      */
     public boolean isValid() {
-        // TODO:
-        return false;
+        if(isEmpty() || size()==0){
+            return true;
+        }
+        Node temp = origin; 
+        for(Arc arc : arcs){
+            if(temp != arc.getOrigin()){
+                return false;    
+            }
+            temp = arc.getDestination;
+        }
+        return temp==getDestination();
     }
 
     /**
@@ -269,8 +276,11 @@ public class Path {
      * @deprecated Need to be implemented.
      */
     public double getMinimumTravelTime() {
-        // TODO:
-        return 0;
+        int total =0;
+    	for (Arc arc : this.arcs) {
+    		total += arc.getMinimumTravelTime();
+    	}
+    	return total;
     }
 
 }
