@@ -145,14 +145,10 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
 		if(i>=currentSize) {
 			throw new ElementNotFoundException(x);
 		}
-		int ind1 = i;
-		int ind2 = indexLeft(ind1);
-		while(ind2<currentSize){
-			ind1 = ind2;
-			ind2 = indexLeft(ind1);
-		}
-		arraySet(i,array.get((ind1==--currentSize)?ind1:ind1+1));
+		//arraySet(i,array.get(0));
+		arraySet(i,array.get(--currentSize));
 		percolateDown(i);
+		percolateUp(i);
 	}
 
     @Override
