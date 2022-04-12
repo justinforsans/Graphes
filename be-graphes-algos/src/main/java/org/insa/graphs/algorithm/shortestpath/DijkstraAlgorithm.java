@@ -37,9 +37,12 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         toCheck.insert(labels[data.getOrigin().getId()]);
         notifyOriginProcessed(data.getOrigin());///
         
-        
-        while(!toCheck.isEmpty() && !labels[data.getDestination().getId()].isMarque()) {
+        boolean found = false;
+        while(!toCheck.isEmpty() && !found) {
         	Label courant = toCheck.deleteMin();
+        	if (labels[data.getDestination().getId()]==courant) {
+        		found = true;
+        	}
             courant.setMarque(true);
             notifyNodeMarked(graph.getNodes().get(courant.getSommet()));
             for(Arc arc: graph.get(courant.getSommet()).getSuccessors()) {
@@ -58,8 +61,8 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
             }
         }
         
-        // Destination has no predecessor, the solution is infeasible...
-        if ( data.getOrigin() == null) {////
+        // pas de départ, ou pas de chemin trouve
+        if ( data.getOrigin() == null || !found) {
             solution = new ShortestPathSolution(data, Status.INFEASIBLE);
         }
         else {
