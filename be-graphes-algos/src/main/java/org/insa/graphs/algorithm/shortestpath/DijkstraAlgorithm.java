@@ -3,6 +3,7 @@ package org.insa.graphs.algorithm.shortestpath;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.insa.graphs.algorithm.AbstractInputData.Mode;
 import org.insa.graphs.algorithm.AbstractSolution.Status;
 import org.insa.graphs.algorithm.utils.BinaryHeap;
 import org.insa.graphs.algorithm.utils.ElementNotFoundException;
@@ -46,9 +47,15 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
             courant.setMarque(true);
             notifyNodeMarked(graph.getNodes().get(courant.getSommet()));
             for(Arc arc: graph.get(courant.getSommet()).getSuccessors()) {
-            	if(!labels[arc.getDestination().getId()].isMarque()) {
-            		double cout = courant.getCout()+arc.getLength();
-            		notifyNodeReached(arc.getDestination());///
+            	if(!labels[arc.getDestination().getId()].isMarque() && data.isAllowed(arc)) {
+            		double cout = courant.getCout();
+            		if (data.getMode()==Mode.LENGTH) {
+            			cout+=arc.getLength();
+            		}else {
+            			cout+=arc.getMinimumTravelTime();
+            		}
+            			notifyNodeReached(arc.getDestination());
+            			
             	try {
             		toCheck.remove(labels[arc.getDestination().getId()]);
             	}catch(ElementNotFoundException e){}
