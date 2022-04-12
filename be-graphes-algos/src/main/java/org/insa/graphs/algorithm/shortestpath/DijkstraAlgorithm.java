@@ -36,22 +36,25 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         BinaryHeap<Label> toCheck = new BinaryHeap<Label>();
         toCheck.insert(labels[data.getOrigin().getId()]);
         notifyOriginProcessed(data.getOrigin());///
-        while(!toCheck.isEmpty()) {
-        	int courant = toCheck.deleteMin().getSommet();
-            labels[courant].setMarque(true);
-            for(Arc arc: graph.get(courant).getSuccessors()) {
+        
+        
+        while(!toCheck.isEmpty() && !labels[data.getDestination().getId()].isMarque()) {
+        	Label courant = toCheck.deleteMin();
+            courant.setMarque(true);
+            notifyNodeMarked(graph.getNodes().get(courant.getSommet()));
+            for(Arc arc: graph.get(courant.getSommet()).getSuccessors()) {
             	if(!labels[arc.getDestination().getId()].isMarque()) {
-            		double cout = labels[courant].getCout()+arc.getLength();
+            		double cout = courant.getCout()+arc.getLength();
             		notifyNodeReached(arc.getDestination());///
-            		if(cout<labels[arc.getDestination().getId()].getCout()) {
-            			labels[arc.getDestination().getId()].setCout(cout);
-            			labels[arc.getDestination().getId()].setPere(arc);
-            		}
-            	}
             	try {
             		toCheck.remove(labels[arc.getDestination().getId()]);
             	}catch(ElementNotFoundException e){}
-            	toCheck.insert(labels[arc.getDestination().getId()]);            	
+            	if(cout<labels[arc.getDestination().getId()].getCout()) {
+        			labels[arc.getDestination().getId()].setCout(cout);
+        			labels[arc.getDestination().getId()].setPere(arc);
+        		}
+            	toCheck.insert(labels[arc.getDestination().getId()]);
+            	}
             }
         }
         
