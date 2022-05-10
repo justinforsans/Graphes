@@ -15,7 +15,8 @@ public class LabelStar extends Label implements Comparable<Label>{
 	public void setEstimatedCost (double estimatedCost) {
 		this.estimatedCost=estimatedCost;
 	}
-
+	
+	@Override
 	public double getTotalCost() {
 		return getCout()+getEstimatedCost();
 	}

@@ -19,43 +19,54 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         super(data);
     }
 
+    public Label newLabel(int sommet, ShortestPathData data) { //renvoie un nouveau label, permet l'override  dans le cas de Astar
+    	return new Label(sommet);
+    }
+    
     @Override
     protected ShortestPathSolution doRun() {
-        final ShortestPathData data = getInputData();
-        ShortestPathSolution solution = null;
+    	
+        final ShortestPathData data = getInputData(); //recuperation donnees
+        ShortestPathSolution solution = null;  //initialisation solution
+        boolean found = false;  //solution pas encore trouvee
+        
         //cas null
         //cas INFEASIBLE
         //cas 1 node
+        
         ArrayList<Arc> arcs = new ArrayList<>();
         Graph graph = data.getGraph();
         final int nbNodes = graph.size();
-        Label[] labels = new Label[nbNodes];
-        for(int i = 0 ; i<nbNodes; i++) {
-        	labels[i]=new Label(i);
-        }
-        labels[data.getOrigin().getId()].setCout(0);
-        BinaryHeap<Label> toCheck = new BinaryHeap<Label>();
-        toCheck.insert(labels[data.getOrigin().getId()]);
-        notifyOriginProcessed(data.getOrigin());///
         
-        boolean found = false;
-        while(!toCheck.isEmpty() && !found) {
-        	Label courant = toCheck.deleteMin();
-        	if (labels[data.getDestination().getId()]==courant) {
+        Label[] labels = new Label[nbNodes]; //initialisation des labels 
+        for(int i = 0 ; i<nbNodes; i++) {
+        	labels[i]=newLabel(i, data);
+        }
+        
+        BinaryHeap<Label> toCheck = new BinaryHeap<Label>(); //initialisation de l'arbre binaire a traiter
+        labels[data.getOrigin().getId()].setCout(0); //cout nul dans le cas de l'origine
+        toCheck.insert(labels[data.getOrigin().getId()]);  //insertion de l'origine dans l'arbre
+        notifyOriginProcessed(data.getOrigin());  //signalement du traitement de l'origine
+        
+        while(!toCheck.isEmpty() && !found) { //tant que l'arbre n'est pas vide et qu'on n'a pas trouvé de solution. double condition pour le cas ou aucun chemin n'existe
+        	Label courant = toCheck.deleteMin();  //node à traiter
+        	
+        	if (labels[data.getDestination().getId()]==courant) { //cas ou le node est la destination
         		found = true;
         	}
-            courant.setMarque(true);
-            notifyNodeMarked(graph.getNodes().get(courant.getSommet()));
-            for(Arc arc: graph.get(courant.getSommet()).getSuccessors()) {
-            	if(!labels[arc.getDestination().getId()].isMarque() && data.isAllowed(arc)) {
+        	
+            courant.setMarque(true); //on marque le node que l'on traite
+            notifyNodeMarked(graph.getNodes().get(courant.getSommet()));  //et on signale son traitement
+            
+            for(Arc arc: graph.get(courant.getSommet()).getSuccessors()) {  //on va traiter tous les arcs en contact avec le node
+            	if(!labels[arc.getDestination().getId()].isMarque() && data.isAllowed(arc)) {  //on verifie que l'arc ne debouche pas sur un node marqué. is allowed verifie que l'arc est accessible au moyen de transport choisi
             		double cout = courant.getCout();
-            		if (data.getMode()==Mode.LENGTH) {
+            		if (data.getMode()==Mode.LENGTH) { //on actualise le cout en distance ou en temps
             			cout+=arc.getLength();
             		}else {
             			cout+=arc.getMinimumTravelTime();
             		}
             			notifyNodeReached(arc.getDestination());
-            			
             	try {
             		toCheck.remove(labels[arc.getDestination().getId()]);
             	}catch(ElementNotFoundException e){}
