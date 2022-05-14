@@ -80,10 +80,9 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         }
         
         // pas de départ, ou pas de chemin trouve
-        if ( data.getOrigin() == null || !found) {
+        if ( data.getOrigin() == null || !found || data.getOrigin()==data.getDestination()) {
             solution = new ShortestPathSolution(data, Status.INFEASIBLE);
-        }
-        else {
+        }else {
             // The destination has been found, notify the observers.
         	notifyDestinationReached(data.getDestination());
 
