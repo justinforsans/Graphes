@@ -30,10 +30,6 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         ShortestPathSolution solution = null;  //initialisation solution
         boolean found = false;  //solution pas encore trouvee
         
-        //cas null
-        //cas INFEASIBLE
-        //cas 1 node
-        
         ArrayList<Arc> arcs = new ArrayList<>();
         Graph graph = data.getGraph();
         final int nbNodes = graph.size();
